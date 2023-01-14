@@ -58,16 +58,72 @@ const addBookHandler = (request, h) => {
     return response;
 };
 
-const getAllBooksHandler = () => ({
-    status: 'success',
-    data: {
-    books: books.map((book) => ({
-        id: book.id,
-        name: book.name,
-        publisher: book.publisher,
-    })),
-    },
-});
+
+
+const getBooksHandler = (request, h) => {
+    const { name, reading, finished } = request.query;
+
+    if (name !== undefined) {
+        const filteredBooks = books.filter((book) => book.name.toLowerCase().includes(name.toLowerCase()));
+        const response = h.response({
+            status: 'success',
+            data: {
+                books: filteredBooks.map((book) => ({
+                    id: book.id,
+                    name: book.name,
+                    publisher: book.publisher,
+                })),
+            },
+        });
+        response.code(200);
+        return response;
+    }
+
+    if (reading !== undefined) {
+        const filteredBooks = books.filter((book) => Number(book.reading) === Number(reading));
+        const response = h.response({
+            status: 'success',
+            data: {
+                books: filteredBooks.map((book) => ({
+                    id: book.id,
+                    name: book.name,
+                    publisher: book.publisher,
+                })),
+            },
+        });
+        response.code(200);
+        return response;
+    }
+
+    if (finished !== undefined) {
+        const filteredBooks = books.filter((book) => Number(book.finished) === Number(finished));
+        const response = h.response({
+            status: 'success',
+            data: {
+                books: filteredBooks.map((book) => ({
+                    id: book.id,
+                    name: book.name,
+                    publisher: book.publisher,
+                })),
+            },
+        });
+        response.code(200);
+        return response;
+    }
+    
+    const response = h.response({
+        status: 'success',
+        data: {
+            books: books.map((book) => ({
+                id: book.id,
+                name: book.name,
+                publisher: book.publisher,
+            })),
+        },
+    });
+    response.code(200);
+    return response;
+};
 
 const getBookByIdHandler = (request, h) => {
     const { id } = request.params;
@@ -169,4 +225,4 @@ const deleteBookByIdHandler = (request, h) => {
     return response;
 }
 
-module.exports = { addBookHandler, getAllBooksHandler, getBookByIdHandler, editBookByIdHandler, deleteBookByIdHandler };
+module.exports = { addBookHandler, getBooksHandler, getBookByIdHandler, editBookByIdHandler, deleteBookByIdHandler };
